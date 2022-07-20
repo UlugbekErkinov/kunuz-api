@@ -1,0 +1,116 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} Kun.uz {% endblock %}</title>
+    
+</head>
+<body>
+<header>
+    
+    {% for category in categories %}
+        <li class="nav-item">
+            <a class="nav-link active"
+                href="{% url 'category_news' category.slug %}"><strong>{{ category.name|upper }}</strong></a>
+        </li>
+    {% endfor %}
+
+    <li class="nav-item">
+        <a class="nav-link active" aria-current="page">Hududlar</a>
+    </li>
+    {% for city in cities %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'city_news' city.slug %}">{{ city.name }}</a>
+        </li>
+    {% endfor %}
+               
+
+</header>
+    
+
+{% block content %}
+    {% if tag.name %}
+        <h1>{{ tag.name }}ga oid yangiliklar</h1>
+    {% else %}
+    <h1>Barcha yangiliklar</h1>
+    {% endif %}
+    <hr>
+   
+
+    {% for new in news %}
+        
+                    <p class="card-text"><strong>{{ new.title }}</strong></p>
+                    <p class="card-text">{{ new.description|truncatewords:8 }}</p>
+                    
+                            <a href="{% url 'new_detail' new.slug %}">
+                                <button type="button" class="btn btn-sm btn-outline-secondary">Batafsil
+                                </button>
+                            </a>
+                        
+                        <small class="text-muted">{{ new.created|time:'h:i' }}
+                            / {{ new.created|date:'d.m.Y' }}</small>
+                    
+    {% endfor %}
+
+    {% for new in news %}
+    
+                <p class="card-text"><strong>{{ new.title }}</strong></p>
+                <p class="card-text">{{ new.description|truncatewords:8 }}</p>
+                
+                        <a href="{% url 'new_detail' new.slug %}">
+                        <button type="button" class="btn btn-sm btn-outline-secondary">Batafsil</button>
+                        </a>
+                    
+                    <small class="text-muted">{{ new.created|time:'h:i' }} {{ new.created|date:'d.m.Y' }}</small>
+                           
+   {% endfor %}
+
+
+
+   <h1>{{ city.name }} yangiliklar</h1>
+    <hr>
+    
+    {% for new in news %}
+    
+                <p class="card-text"><strong>{{ new.title }}</strong></p>
+                <p class="card-text">{{ new.description|truncatewords:8 }}</p>
+                
+                        <a href="{% url 'new_detail' new.slug %}">
+                        <button type="button" class="btn btn-sm btn-outline-secondary">Batafsil</button>
+                        </a>
+                    </div>
+                    <small class="text-muted">{{ new.created|time:'h:i' }} {{ new.created|date:'d.m.Y' }}</small>
+                           
+        {% endfor %}
+
+        <hr>
+    
+                <h5>So'nggi yangiliklar</h5>
+                {% for nl in news_last %}
+                    <span>Sana: {{ nl.created|time:'h:i' }}/ {{ nl.created|date:'d.m.Y' }}</span>
+                    <p style="font-size: large"><a href="{% url 'new_detail' nl.slug %}">{{ nl.title }}</a></p><hr>
+                {% endfor %}
+            
+                <span>Sana: {{ new.created|time:'h:i' }} / {{ new.created|date:'d.m.Y' }}</span> |
+                <span>Ko'rish: {{ new.views }}</span>
+                <h2>{{ new.title }}</h2>
+                <img style="width: 80%;" src="{{ new.img.url }}"></div>
+                <p>{{ new.description }}</p>
+                {% for tag in new.tags.all %}
+                    <a href="{% url 'tag_list' tag.slug %}">#{{ tag.name }}</a> |
+                {% endfor %}
+            
+                <h5>{{ new.category.name }} yangiliklar</h5>
+                {% for nc in news_category %}
+                    {% if new.title != nc.title %}
+                        <span>Sana: {{ nc.created|time:'h:i' }}/ {{ nc.created|date:'d.m.Y' }}</span>
+                        <p style="font-size: large"><a href="{% url 'new_detail' nc.slug %}">{{ nc.title }}</a></p>
+                    {% endif %}
+                {% endfor %}
+           
+
+{% endblock %}
+
+</body>
+</html>
